@@ -24,9 +24,19 @@ fred.name = "Brick"
 fred.weight = 999.2
 fred.homePlanet = "Mars"
 ```
+answer:
+No, because homePlanet is declared with a constant. Otherwise, the class Giant, which is a reference type, would replace the raw values with the new values. 
 
 Fix the class definition for `Giant` in the space below so that it **does** work:
 
+answer:
+```swift
+class Giant {
+ var name = String()
+ var weight = Double()
+ var homePlanet = String()
+}
+```
 
 ## Question 2
 
@@ -48,8 +58,15 @@ bilbo.name = "Jake"
 bilbo.height = 1.42
 bilbo.homePlanet = "Saturn"
 ```
+answer:
+The code would not run because the struct Alien was initialized by using a constant.  
 
 Change the declaration of `bilbo` so that the above three lines of code **do** work:
+
+answer:
+```swift
+var bilbo = Alien(name: "Bilbo", height: 1.67, homePlanet: "Venus")
+```
 
 
 ## Question 3
@@ -65,6 +82,10 @@ jason.name = "Jason"
 
 What will the value of `edgar.name` be after those three lines of code are run? What will the value of `jason.name` be? Why?
 
+answer:
+The value of edgar.name is Jason. 
+The value of jason.name is Jason because it has been replaced with a new value. jason in a new initiailzer has the values of stored properties of edgar, which replaced the name edgar to Jason. This is because Giant is a reference type and the values can be changed to the original. 
+
 
 ## Question 4
 
@@ -77,6 +98,10 @@ charlesFromJupiter.homePlanet = "Jupiter"
 ```
 
 What will the value of `charles.homePlanet` be after the above code run? What about the value of `charlesFromJupiter.homePlanet`? Why?
+
+answer:
+The value of charles.homePlant is Pluto. 
+The value of charlesFromJupiter.homePlanet is Jupiter because the value from charles has been replaced to Jupiter. Alien is a structure and initializers have  copies of the stored properties, in effect, the variables has their own values stored.
 
 
 ## Question 5
@@ -99,8 +124,26 @@ struct BankAccount {
 ```
 
 Does this code work? Why or why not?
+answer:
+The functions without the mutating keyword cannot be mutatable by itself. 
 
 Fix the `BankAccount` struct so it does work.
+
+answer: 
+```swift
+struct BankAccount {
+ var owner: String
+ var balance: Double
+
+ mutating func deposit(_ amount: Double) {
+ balance += amount
+ }
+
+ mutating func withdraw(_ amount: Double) {
+ balance -= amount
+ }
+}
+```
 
 Given the code below (which should incorporate any fixes you made):
 
@@ -109,31 +152,126 @@ var joeAccount = BankAccount(owner: "Joe", balance: 100.0)
 var joeOtherAccount = joeAccount
 joeAccount.withdraw(50.0)
 ```
+answer:
+
 
 What will the value of `joeAccount.balance` be after the above code runs? What about the value of `joeOtherAccount.balance`? Why?
+
+answer: 
+The value of joeAccount.balance is 100.0. 
+The value of joeOtherAccount.balance is 50.0. These are two different values because BankAccount is a structure and the initializers copies the stored properties to thier set of values. The 50.0 was subtracted from the withdraw mutating function. 
 
 
 ## Question 6
 
 a. Write a struct called `Person` that has 3 properties of type `String`: a first name, a last name and a middle name. Have the middle name be optional. Create 2 instances of a `Person`, one with a middle name and one without. Print one of their first names.
 
+answer:
+```swift
+struct Person {
+    var firstName = String()
+    var lastName = String()
+    var middleName: String?
+}
+var person1 = Person(firstName: "Yesica", lastName: "Alfaro", middleName: "Irene")
+var person2 = Person(firstName: "Blake", lastName: "Rojo", middleName: nil)
+print(person2.firstName)
+```
 
 b. Write a method in `Person` called `fullName` that will return a formatted string of an instance's full name. Call this method on both the instances you created in part a.
 
+```swift
+struct Person {
+    var firstName = String()
+    var lastName = String()
+    var middleName: String?
+    
+    func fullName() -> String {
+       return "\(firstName) \(middleName ?? "") \(lastName)"
+    }
+}
+var person1 = Person(firstName: "Yesica", lastName: "Alfaro", middleName: "Irene")
+var person2 = Person(firstName: "Blake", lastName: "Rojo", middleName: nil)
+print(person2.firstName)
+
+
+print(person1.fullName())
+print(person2.fullName())
+```
 
 ## Question 7
 
 a. Create a struct called `Book` that has properties `title`, `author` and `rating`, of type `String`, `String`, and `Double` respectively. Create some instances of `Book`.
 
+answer: 
+```swift
+struct Book {
+    
+    var title = String()
+    var author = String()
+    var rating = Double()
+    
+}
+var instance1 = Book(title: "To Kill a Mockingbird", author: "Harper Lee", rating: 5)
+var instance2 = Book(title: "Where the Crawdads Sing", author: "Delia Owens", rating: 4)
+```
 
 b. Add a method to `Book` called `isGood` that returns `true` if its rating is greater than or equal to 7
 
+answer:
+```swift
+struct Book {
+    
+    var title = String()
+    var author = String()
+    var rating = Double()
+    
+    func isGood(rating: Double) -> Bool {
+        if rating >= 7.0 {
+            return true
+        } else {
+            return false
+        }
+    }
+}
+```
 
 ## Question 8
 
 ```swift
 class Dog {
 
+    var name = String()
+    var breed = String()
+    var mood = String()
+    var hungry = Bool()
+
+    static var count = 0
+    init() {
+        Dog.count += 1
+    }
+    
+    func playFetch() {
+        self.hungry = true
+        self.mood = "playful"
+        print("Ruff!")
+    }
+    
+    func feed() {
+        if self.hungry == true {
+            print("Woof!")
+            self.hungry == false
+        } else {
+            print("The dog doesn't look hungry")
+        }
+    }
+    func toString() -> String {
+        return """
+        Name:\(self.name)
+        Breed:\(self.breed)
+        Mood:\(self.mood)
+        """
+    }
 }
 ```
 
@@ -207,6 +345,15 @@ K = C + 273
 
 a. Make a struct called `FreezingPoint` that has three static properties: `celsius`, `fahrenheit`, and `kelvin`. Give them all values equal to the freezing point of water.
 
+```swift
+struct FreezingPoint {
+    
+    var celsius: Double = (fahrenheit - 32) / 1.8
+    var fahrenheit: Double = 1.8 * celsius + 32
+    var kelvin: Double = celsius + 273
+    
+}
+```
 
 b. Make a struct called `Celsius` that has one property: `celsius`, and two methods `getFahrenheitTemp`, and `getKelvinTemp`. Make the values of `fahrenheit` and `kelvin` correct values, converted from the `celsius` property.
 
