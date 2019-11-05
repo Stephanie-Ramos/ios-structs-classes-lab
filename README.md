@@ -25,7 +25,7 @@ fred.weight = 999.2
 fred.homePlanet = "Mars"
 ```
 answer:
-No, because homePlanet is declared with a constant. Otherwise, the class Giant, which is a reference type, would replace the raw values with the new values. 
+No, the objects are reference types and homePlanet stored property is declared with a constant. 
 
 Fix the class definition for `Giant` in the space below so that it **does** work:
 
@@ -59,7 +59,7 @@ bilbo.height = 1.42
 bilbo.homePlanet = "Saturn"
 ```
 answer:
-The code would not run because the struct Alien was initialized by using a constant.  
+The code would not run because bilbo instance was initialized with a constant.  
 
 Change the declaration of `bilbo` so that the above three lines of code **do** work:
 
@@ -124,6 +124,7 @@ struct BankAccount {
 ```
 
 Does this code work? Why or why not?
+
 answer:
 The functions without the mutating keyword cannot be mutatable by itself. 
 
@@ -153,7 +154,7 @@ var joeOtherAccount = joeAccount
 joeAccount.withdraw(50.0)
 ```
 answer:
-
+joeOtherAccount should incorporate the withdraw. 
 
 What will the value of `joeAccount.balance` be after the above code runs? What about the value of `joeOtherAccount.balance`? Why?
 
@@ -343,14 +344,14 @@ C = (F - 32) / 1.8
 F = 1.8 * C + 32
 K = C + 273
 
-a. Make a struct called `FreezingPoint` that has three static properties: `celsius`, `fahrenheit`, and `kelvin`. Give them all values equal to the freezing point of water.
+a. Make a struct called `FreezingPoint` that has three static properties: `celsius`, `fahrenheit`, and `kelvin`. Give them all values equal to the freezing point of water. 
 
 ```swift
 struct FreezingPoint {
-    
-    var celsius: Double = (fahrenheit - 32) / 1.8
-    var fahrenheit: Double = 1.8 * celsius + 32
-    var kelvin: Double = celsius + 273
+
+    static var celsius: Double = (fahrenheit - 32) / 1.8
+    static var fahrenheit: Double = 1.8 * celsius + 32
+    static var kelvin: Double = celsius + 273
     
 }
 ```
@@ -358,6 +359,23 @@ struct FreezingPoint {
 b. Make a struct called `Celsius` that has one property: `celsius`, and two methods `getFahrenheitTemp`, and `getKelvinTemp`. Make the values of `fahrenheit` and `kelvin` correct values, converted from the `celsius` property.
 
 ```swift
+struct Celsius {
+    
+    var celsius = Double()
+    
+    init(celsius: Double) {
+        self.celsius = celsius
+    }
+    
+    func getFahrenheitTemp() -> Double {
+        return (celsius * 1.8) + 32
+    }
+    
+    func getKelvinTemp() -> Double {
+        return celsius + 273
+    }
+    
+}
 var tenDegreesCelsius = Celsius(celsius: 10.0)
 tenDegreesCelsius.celsius //returns 10.0
 tenDegreesCelsius.getKelvinTemp() //returns 283.0
@@ -366,6 +384,34 @@ tenDegreesCelsius.getFahrenheitTemp() //returns 50.0
 
 c. Give the `Celsius` struct a method called `isBelowFreezing` that returns a `Bool` (true if the temperature is below freezing).
 
+```swift
+struct Celsius {
+
+    var celsius = Double()
+
+    init(celsius: Double) {
+        self.celsius = celsius
+    }
+
+    func getFahrenheitTemp() -> Double {
+        return (celsius * 1.8) + 32
+    }
+
+    func getKelvinTemp() -> Double {
+        return celsius + 273
+    }
+
+    func isBelowFreezing() -> Bool {
+        if celsius <= 0 || getFahrenheitTemp() <= 32 || getKelvinTemp() <= 273.15 {
+        return true
+        } else {
+        return false
+    }
+
+}
+var tenDegree = Celsius(celsius: 10.00)
+// error: Value type 'Celsius' cannot have a stored property that recursively contains it
+```
 
 ## Question 10
 
@@ -381,13 +427,47 @@ let colorDictArray: [[String: Double]] = [["red": 1.0, "green": 0.0, "blue": 0.0
  ["red": 0.2, "green": 0.2, "blue": 0.5],
  ["red": 0.5, "green": 0.1, "blue": 0.9],]
 ```
-
+answer:
+```swift
+    struct RGBColor {
+    
+        var red: Double
+        var green: Double
+        var blue: Double
+}
+```
 
 ## Question 11
 
 a. Create a struct called `Movie` that has properties for `name` (`String`), `year` (`Int`), `genre` (`String`), `cast` (`[String]`), and `description` (`String`). Create an instance of your `Movie` class
 
+```swift
+    struct Movie {
+        var name = String()
+        var year = Int()
+        var genre = String()
+        var cast = [String]()
+        var description = String()
+}
+let instance1 = Movie(name: "Maleficent: Mistress of Evil", year: 2019, genre: "Fantasy/ Action", cast: ["Angelina Jolie", "Michelle Pfeiffer"], description: "Maleficent travels to a grand old castle to celebrate young Aurora's upcoming wedding to Prince Phillip.")
+```
+
 b. Create an instance method inside `Movie` called `blurb` that returns a formatted string describing the movie.
+
+```swift
+    struct Movie {
+        var name = String()
+        var year = Int()
+        var genre = String()
+        var cast = [String]()
+        var description = String()
+        
+        func blurb() -> String {
+            let blurb = "\(name) came out in \(year). It was a(n) \(genre) film starring \(cast) \(description)."
+            return blurb
+        }
+}
+```
 
 Ex: "Borat came out in 2006. It was an odd film starring Sacha Baron Cohen as a man named Borat who was visiting America from Kazakhstan."
 
@@ -395,6 +475,20 @@ Ex: "Borat came out in 2006. It was an odd film starring Sacha Baron Cohen as a 
 ## Question 12
 
 Create a function outside of your `Movie` struct called `makeMovie` that takes in a dictionary of type `[String: Any]`, like `dieHardDict` below, and returns an `optional Movie`. Use `dieHardDict` to create an instance of a `Movie`.
+
+answer:
+```swift
+    func makeMovie(dict: [String: Any]) -> Movie? {
+        
+        // type casting to its expected type
+        let name = dict["name"] as? String
+        let year = dict["year"] as? Int
+        let genre = dict["genre"] as? String
+        let cast = dict["cast"] as? [String]
+        let description = dict["description"] as? String
+        
+}
+```
 
 ```swift
 let dieHardDict: [String: Any] = ["name": "Die Hard",
@@ -505,4 +599,7 @@ var movies: [[String:Any]] = [
  "description": "Navy S.E.A.L. sniper Chris Kyle\"s pinpoint accuracy saves countless lives on the battlefield and turns him into a legend. Back home to his wife and kids after four tours of duty, however, Chris finds that it is the war he can\"t leave behind."
  ]
 ]
+```
+answer:
+```swift
 ```
